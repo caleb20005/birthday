@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Video Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+        }
+        
+        .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+        
+        @keyframes float-delayed {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(-5deg); }
+        }
+        
+        .float-anim { animation: float 6s ease-in-out infinite; }
+        .float-anim-delayed { animation: float-delayed 7s ease-in-out infinite; }
+        
+        /* Balloon Animation */
+        @keyframes balloon-rise {
+            0% { transform: translateY(100vh) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+        }
+        
+        .balloon {
+            position: absolute;
+            bottom: -100px;
+            animation: balloon-rise 15s linear infinite;
+        }
+        
+        /* Card Hover Effects */
+        .video-card {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .video-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 25px 50px -12px rgba(255, 105, 180, 0.4);
+        }
+        
+        .video-card:hover .play-button {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #ff6b6b, #ff8e53);
+        }
+        
+        /* Modal Animation */
+        @keyframes modal-enter {
+            from { opacity: 0; transform: scale(0.9) translateY(20px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        
+        .modal-content {
+            animation: modal-enter 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* Confetti */
+        @keyframes confetti-fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            top: -10px;
+            animation: confetti-fall 5s linear infinite;
+        }
+        
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #ff6b6b, #feca57, #ff9ff3, #54a0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1a1a2e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ff6b6b, #feca57);
+            border-radius: 5px;
+        }
+        
+        /* Play Button Pulse */
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+        
+        .pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Video thumbnail styling */
+        .video-thumbnail {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Line clamp fallback (no Tailwind plugin needed) */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body class="text-white overflow-x-hidden relative">
+
+    <!-- Floating Balloons Background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div class="balloon left-[10%]" style="animation-delay: 0s;">
+            <svg width="60" height="80" viewBox="0 0 60 80" fill="none">
+                <ellipse cx="30" cy="35" rx="25" ry="35" fill="#ff6b6b" opacity="0.6"/>
+                <path d="M30 70 L30 80" stroke="#ff6b6b" stroke-width="2" opacity="0.6"/>
+            </svg>
+        </div>
+        <div class="balloon left-[30%]" style="animation-delay: 3s;">
+            <svg width="50" height="70" viewBox="0 0 50 70" fill="none">
+                <ellipse cx="25" cy="30" rx="20" ry="30" fill="#feca57" opacity="0.6"/>
+                <path d="M25 60 L25 70" stroke="#feca57" stroke-width="2" opacity="0.6"/>
+            </svg>
+        </div>
+        <div class="balloon left-[50%]" style="animation-delay: 6s;">
+            <svg width="55" height="75" viewBox="0 0 55 75" fill="none">
+                <ellipse cx="27.5" cy="32.5" rx="22.5" ry="32.5" fill="#ff9ff3" opacity="0.6"/>
+                <path d="M27.5 65 L27.5 75" stroke="#ff9ff3" stroke-width="2" opacity="0.6"/>
+            </svg>
+        </div>
+        <div class="balloon left-[70%]" style="animation-delay: 2s;">
+            <svg width="45" height="65" viewBox="0 0 45 65" fill="none">
+                <ellipse cx="22.5" cy="27.5" rx="17.5" ry="27.5" fill="#54a0ff" opacity="0.6"/>
+                <path d="M22.5 55 L22.5 65" stroke="#54a0ff" stroke-width="2" opacity="0.6"/>
+            </svg>
+        </div>
+        <div class="balloon left-[85%]" style="animation-delay: 5s;">
+            <svg width="60" height="80" viewBox="0 0 60 80" fill="none">
+                <ellipse cx="30" cy="35" rx="25" ry="35" fill="#5f27cd" opacity="0.6"/>
+                <path d="M30 70 L30 80" stroke="#5f27cd" stroke-width="2" opacity="0.6"/>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Confetti -->
+    <div id="confetti-container" class="fixed inset-0 pointer-events-none z-50"></div>
+
+    <!-- Header -->
+    <header class="relative z-10 pt-12 pb-8 px-4 text-center">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-start">
+                <a href="surprise.html" class="inline-flex items-center gap-2 px-4 py-2 rounded-full glass text-white font-semibold transition-all hover:bg-white/10 hover:scale-105" aria-label="Go back">
+                    <span aria-hidden="true">←</span>
+                    Back
+                </a>
+            </div>
+            <div class="float-anim inline-block mb-4">
+                <span class="text-6xl">🎂</span>
+            </div>
+            <h1 class="serif-font text-5xl md:text-7xl font-bold mb-4 gradient-text italic">
+                Birthday Memories
+            </h1>
+            <p class="text-xl text-gray-300 max-w-2xl mx-auto leading-relaxed">
+                A collection of precious moments, laughter, and celebrations. 
+                <span class="block mt-2 text-pink-400 font-semibold">Click any video to relive the magic ✨</span>
+            </p>
+            
+            <!-- Filter Buttons -->
+            <div class="mt-8 flex flex-wrap justify-center gap-3">
+                <button onclick="filterVideos('all')" class="filter-btn active px-6 py-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold transition-all hover:shadow-lg hover:scale-105" data-filter="all">
+                    All Videos
+                </button>
+                <button onclick="filterVideos('wishes')" class="filter-btn px-6 py-2 rounded-full glass text-white font-semibold transition-all hover:bg-white/10 hover:scale-105" data-filter="wishes">
+                    Birthday Wishes
+                </button>
+                <button onclick="filterVideos('moments')" class="filter-btn px-6 py-2 rounded-full glass text-white font-semibold transition-all hover:bg-white/10 hover:scale-105" data-filter="moments">
+                    Party Moments
+                </button>
+                <button onclick="filterVideos('surprises')" class="filter-btn px-6 py-2 rounded-full glass text-white font-semibold transition-all hover:bg-white/10 hover:scale-105" data-filter="surprises">
+                    Surprises
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Gallery Grid -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 pb-20">
+        <div id="video-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Video Card 1 - UPDATED WITH USER VIDEO -->
+            <div class="video-card group relative rounded-2xl overflow-hidden cursor-pointer glass" data-category="wishes" data-video-id="1">
+                <div class="aspect-video relative overflow-hidden bg-gray-800">
+                    <!-- Video thumbnail/preview -->
+                    <img src="images/cynthia-01.jpeg" alt="Birthday Girl - Jeif Annie (Lyrics)" class="video-thumbnail transition-transform duration-700 group-hover:scale-110" 
+                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                    
+                    <!-- Fallback gradient background if image fails -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-pink-600 via-purple-600 to-blue-600 hidden items-center justify-center">
+                        <span class="text-6xl">🎵</span>
+                    </div>
+                    
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                    
+                    <!-- Play Button -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button class="play-button relative w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300" data-play-button="1" aria-label="Play video">
+                            <div class="pulse-ring"></div>
+                            <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <!-- Duration Badge -->
+                    <div class="absolute bottom-3 right-3 bg-black/60 px-2 py-1 rounded text-xs font-semibold">
+                        02:44
+                    </div>
+                    
+                    <!-- Featured Badge -->
+                    <div class="absolute top-3 left-3 bg-gradient-to-r from-pink-500 to-purple-600 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+                        Featured
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">🎁</span>
+                        <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">Birthday Wishes</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-pink-400 transition-colors">Birthday Girl - Jeif Annie (Lyrics)</h3>
+                    <p class="text-gray-400 text-sm line-clamp-2">Birthday Girl by Jeif Annie with lyrics.</p>
+                    <div class="mt-4 flex items-center gap-3 text-xs text-gray-500">
+                        <span>👁 2.4k views</span>
+                        <span>•</span>
+                        <span>Just now</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Card 2 -->
+            <div class="video-card group relative rounded-2xl overflow-hidden cursor-pointer glass" data-category="moments" data-video-id="2">
+                <div class="aspect-video relative overflow-hidden">
+                    <img src="images/cynthia-02.jpeg" alt="Nviiri - Birthday Song" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                    
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button class="play-button relative w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300" data-play-button="2" aria-label="Play video">
+                            <div class="pulse-ring"></div>
+                            <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="absolute bottom-3 right-3 bg-black/60 px-2 py-1 rounded text-xs font-semibold">
+                        05:12
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">🎉</span>
+                        <span class="text-xs font-bold text-yellow-400 uppercase tracking-wider">Party Moments</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-yellow-400 transition-colors">Nviiri - Birthday Song (Official Video)</h3>
+                    <p class="text-gray-400 text-sm line-clamp-2">Nviiri the Storyteller ft. Sauti Sol, Bensoul & Khaligraph Jones.</p>
+                    <div class="mt-4 flex items-center gap-3 text-xs text-gray-500">
+                        <span>👁 3.4k views</span>
+                        <span>•</span>
+                        <span>1 week ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Card 3 -->
+            <div class="video-card group relative rounded-2xl overflow-hidden cursor-pointer glass" data-category="surprises" data-video-id="3">
+                <div class="aspect-video relative overflow-hidden">
+                    <img src="images/cynthia-03.jpeg" alt="Anne-Marie - Birthday" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                    
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button class="play-button relative w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300" data-play-button="3" aria-label="Play video">
+                            <div class="pulse-ring"></div>
+                            <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="absolute bottom-3 right-3 bg-black/60 px-2 py-1 rounded text-xs font-semibold">
+                        01:45
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">🎊</span>
+                        <span class="text-xs font-bold text-purple-400 uppercase tracking-wider">Surprises</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-purple-400 transition-colors">Anne-Marie - BIRTHDAY (Official Video)</h3>
+                    <p class="text-gray-400 text-sm line-clamp-2">Anne-Marie - BIRTHDAY (Official Video).</p>
+                    <div class="mt-4 flex items-center gap-3 text-xs text-gray-500">
+                        <span>👁 892 views</span>
+                        <span>•</span>
+                        <span>3 days ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Card 4 -->
+            <div class="video-card group relative rounded-2xl overflow-hidden cursor-pointer glass" data-category="wishes" data-video-id="4">
+                <div class="aspect-video relative overflow-hidden">
+                    <img src="images/cynthia-04.jpeg" alt="Birthday Girl (360p)" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                    
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button class="play-button relative w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300" data-play-button="4" aria-label="Play video">
+                            <div class="pulse-ring"></div>
+                            <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="absolute bottom-3 right-3 bg-black/60 px-2 py-1 rounded text-xs font-semibold">
+                        03:20
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">💌</span>
+                        <span class="text-xs font-bold text-pink-400 uppercase tracking-wider">Birthday Wishes</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-pink-400 transition-colors">Birthday Girl (360p)</h3>
+                    <p class="text-gray-400 text-sm line-clamp-2">Birthday Girl (360p).</p>
+                    <div class="mt-4 flex items-center gap-3 text-xs text-gray-500">
+                        <span>👁 2.1k views</span>
+                        <span>•</span>
+                        <span>5 days ago</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Card 5 -->
+            <div class="video-card group relative rounded-2xl overflow-hidden cursor-pointer glass" data-category="moments" data-video-id="5">
+                <div class="aspect-video relative overflow-hidden">
+                    <img src="images/cynthia-05.jpeg" alt="Nelly & Chris Lane - Birthday Girl" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+                    
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <button class="play-button relative w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center transition-all duration-300" data-play-button="5" aria-label="Play video">
+                            <div class="pulse-ring"></div>
+                            <svg class="w-8 h-8 text-white ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                    <div class="absolute bottom-3 right-3 bg-black/60 px-2 py-1 rounded text-xs font-semibold">
+                        04:08
+                    </div>
+                </div>
+                <div class="p-5">
+                    <div class="flex items-center gap-2 mb-2">
+                        <span class="text-2xl">🎂</span>
+                        <span class="text-xs font-bold text-yellow-400 uppercase tracking-wider">Party Moments</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2 group-hover:text-yellow-400 transition-colors">Nelly & Chris Lane - Birthday Girl (Lyrics)</h3>
+                    <p class="text-gray-400 text-sm line-clamp-2">Nelly & Chris Lane - Birthday Girl (Lyrics).</p>
+                    <div class="mt-4 flex items-center gap-3 text-xs text-gray-500">
+                        <span>👁 4.5k views</span>
+                        <span>•</span>
+                        <span>1 week ago</span>
+                    </div>
+                </div>
+            </div>
+
+        <!-- Empty State (Hidden by default) -->
+        <div id="empty-state" class="hidden text-center py-20">
+            <div class="text-6xl mb-4">🔍</div>
+            <h3 class="text-2xl font-bold text-gray-400">No videos found</h3>
+            <p class="text-gray-500 mt-2">Try selecting a different category</p>
+        </div>
+    </main>
+
+    <!-- Video Modal -->
+    <div id="video-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+        <div class="modal-content relative w-full max-w-5xl bg-gray-900 rounded-2xl overflow-hidden shadow-2xl">
+            <!-- Close Button -->
+            <button id="modal-close" class="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors" aria-label="Close video">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+            
+            <!-- Video Player -->
+            <div class="aspect-video bg-black relative">
+                <video id="modal-video-player" class="w-full h-full" controls poster="images/cynthia-01.jpeg">
+                    <source id="modal-video-source" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+            <!-- Video Info -->
+            <div class="p-6 bg-gray-900">
+                <h3 id="modal-title" class="text-2xl font-bold mb-2">Video Title</h3>
+                <p id="modal-description" class="text-gray-400">Video description goes here...</p>
+                <div class="mt-4 flex gap-3">
+                    <button class="px-4 py-2 rounded-lg bg-pink-600 hover:bg-pink-700 text-white text-sm font-semibold transition-colors">
+                        â¤ï¸ Like
+                    </button>
+                    <button class="px-4 py-2 rounded-lg glass hover:bg-white/10 text-white text-sm font-semibold transition-colors">
+                        â†—ï¸ Share
+                    </button>
+                    <button class="px-4 py-2 rounded-lg glass hover:bg-white/10 text-white text-sm font-semibold transition-colors">
+                        ðŸ’¾ Save
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="relative z-10 py-8 text-center text-gray-500 text-sm">
+        <p>Made with 💖 for a special birthday celebration</p>
+    </footer>
+
+    <script>
+        // Video Data - Updated with user video
+        const videoData = {
+            1: { 
+                title: "Birthday Girl - Jeif Annie (Lyrics)", 
+                description: "Birthday Girl by Jeif Annie (lyrics).",
+                src: "videos/birthday-girl-jeif-annie.mp4",
+                fallbackSrc: "public/videos/birthday-girl-jeif-annie.mp4",
+                type: "video/mp4"
+            },
+            2: { 
+                title: "Nviiri the Storyteller - Birthday Song (Official Video)", 
+                description: "Nviiri the Storyteller - Birthday Song ft. Sauti Sol, Bensoul & Khaligraph Jones (Official Video).",
+                src: "videos/nviiri-birthday-song.mp4",
+                fallbackSrc: "public/videos/nviiri-birthday-song.mp4",
+                type: "video/mp4"
+            },
+            3: { 
+                title: "Anne-Marie - BIRTHDAY (Official Video)", 
+                description: "Anne-Marie - BIRTHDAY (Official Video).",
+                src: "videos/anne-marie-birthday.mp4",
+                fallbackSrc: "public/videos/anne-marie-birthday.mp4",
+                type: "video/mp4"
+            },
+            4: { 
+                title: "Birthday Girl (360p)", 
+                description: "Birthday Girl (360p).",
+                src: "videos/birthday-girl.mp4",
+                fallbackSrc: "public/videos/birthday-girl.mp4",
+                type: "video/mp4"
+            },
+            5: { 
+                title: "Nelly & Chris Lane - Birthday Girl (Lyrics)", 
+                description: "Nelly & Chris Lane - Birthday Girl (Lyrics).",
+                src: "videos/nelly-chris-lane-birthday-girl.mp4",
+                fallbackSrc: "public/videos/nelly-chris-lane-birthday-girl.mp4",
+                type: "video/mp4"
+            }
+        };
+
+        // Filter Functionality
+        function filterVideos(category) {
+            const cards = document.querySelectorAll('.video-card');
+            const buttons = document.querySelectorAll('.filter-btn');
+            const emptyState = document.getElementById('empty-state');
+            const grid = document.getElementById('video-grid');
+            
+            // Update button states
+            buttons.forEach(btn => {
+                if (btn.dataset.filter === category) {
+                    btn.classList.remove('glass');
+                    btn.classList.add('bg-gradient-to-r', 'from-pink-500', 'to-purple-600');
+                } else {
+                    btn.classList.add('glass');
+                    btn.classList.remove('bg-gradient-to-r', 'from-pink-500', 'to-purple-600');
+                }
+            });
+            
+            // Filter cards with animation
+            let visibleCount = 0;
+            cards.forEach((card, index) => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 50);
+                    visibleCount++;
+                } else {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    setTimeout(() => {
+                        card.style.display = 'none';
+                    }, 300);
+                }
+            });
+            
+            // Show/hide empty state
+            if (visibleCount === 0) {
+                emptyState.classList.remove('hidden');
+                grid.classList.add('hidden');
+            } else {
+                emptyState.classList.add('hidden');
+                grid.classList.remove('hidden');
+            }
+        }
+
+        // Inline play inside cards
+        function stopAllInlineVideos() {
+            const videos = document.querySelectorAll('.video-card video');
+            videos.forEach(video => {
+                video.pause();
+            });
+        }
+
+        function playInlineVideo(id) {
+            const card = document.querySelector(`.video-card[data-video-id="${id}"]`);
+            if (!card) return;
+
+            const data = videoData[id];
+            if (!data || !data.src) return;
+
+            stopAllInlineVideos();
+
+            const mediaWrap = card.querySelector('.aspect-video');
+            const overlay = mediaWrap.querySelector('.play-button')?.parentElement;
+
+            let video = mediaWrap.querySelector('video');
+            if (!video) {
+                const img = mediaWrap.querySelector('img');
+                if (img) img.style.display = 'none';
+
+                video = document.createElement('video');
+                video.className = 'w-full h-full object-cover';
+                video.controls = true;
+                video.playsInline = true;
+                video.preload = 'metadata';
+                video.src = data.src;
+                video.onerror = () => {
+                    if (data.fallbackSrc && video.src !== data.fallbackSrc) {
+                        video.src = data.fallbackSrc;
+                        video.load();
+                        video.play().catch(() => {});
+                    }
+                };
+                mediaWrap.prepend(video);
+            } else if (video.src !== data.src) {
+                video.src = data.src;
+            }
+
+            if (overlay) overlay.classList.add('hidden');
+
+            video.play().catch(() => {
+                // If autoplay is blocked, keep controls visible for manual play
+            });
+
+            createConfetti();
+            return video;
+        }
+
+        document.querySelectorAll('[data-play-button]').forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                const id = button.getAttribute('data-play-button');
+                playInlineVideo(id);
+            });
+        });
+
+        document.querySelectorAll('.video-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if (e.target.closest('[data-play-button]')) return;
+                const id = card.getAttribute('data-video-id');
+                const video = playInlineVideo(id);
+                if (!video) return;
+
+                const requestFs = video.requestFullscreen
+                    || video.webkitRequestFullscreen
+                    || video.msRequestFullscreen;
+                if (requestFs) {
+                    requestFs.call(video);
+                }
+            });
+        });
+
+        // Confetti Effect
+        function createConfetti() {
+            const container = document.getElementById('confetti-container');
+            const colors = ['#ff6b6b', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd', '#48dbfb'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                container.appendChild(confetti);
+                
+                setTimeout(() => {
+                    confetti.remove();
+                }, 5000);
+            }
+        }
+
+        // Initial animation on load
+        window.addEventListener('load', () => {
+            const cards = document.querySelectorAll('.video-card');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                setTimeout(() => {
+                    card.style.transition = 'all 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+            
+            // Initial confetti burst
+            setTimeout(createConfetti, 500);
+        });
+
+        // Mouse parallax effect for floating elements
+        document.addEventListener('mousemove', (e) => {
+            const balloons = document.querySelectorAll('.balloon');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            balloons.forEach((balloon, index) => {
+                const speed = (index + 1) * 10;
+                balloon.style.transform = `translateX(${x * speed}px) translateY(${y * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
+

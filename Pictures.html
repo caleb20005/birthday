@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pookie Cynthia's Interactive Gallery 🌟</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff6b9d;
+            --secondary: #a29bfe;
+            --accent: #fd79a8;
+            --dark: #2d3436;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #0f0f1e;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Particle Background */
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            padding: 80px 20px 40px;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 26px rgba(255, 107, 157, 0.35);
+        }
+
+        .header h1 {
+            font-family: 'Dancing Script', cursive;
+            font-size: 5em;
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s ease infinite;
+            background-size: 200% 200%;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 3D Carousel */
+        .carousel-container {
+            position: relative;
+            height: 500px;
+            perspective: 1000px;
+            margin: 50px auto;
+            max-width: 1000px;
+        }
+
+        .carousel {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            animation: rotate 30s infinite linear;
+        }
+
+        @keyframes rotate {
+            from { transform: rotateY(0deg); }
+            to { transform: rotateY(360deg); }
+        }
+
+        .carousel:hover {
+            animation-play-state: paused;
+        }
+
+        .carousel-item {
+            position: absolute;
+            width: 300px;
+            height: 400px;
+            left: 50%;
+            top: 50%;
+            margin-left: -150px;
+            margin-top: -200px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transition: transform 0.5s;
+            cursor: pointer;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .carousel-item:nth-child(1) { transform: rotateY(0deg) translateZ(400px); }
+        .carousel-item:nth-child(2) { transform: rotateY(45deg) translateZ(400px); }
+        .carousel-item:nth-child(3) { transform: rotateY(90deg) translateZ(400px); }
+        .carousel-item:nth-child(4) { transform: rotateY(135deg) translateZ(400px); }
+        .carousel-item:nth-child(5) { transform: rotateY(180deg) translateZ(400px); }
+        .carousel-item:nth-child(6) { transform: rotateY(225deg) translateZ(400px); }
+        .carousel-item:nth-child(7) { transform: rotateY(270deg) translateZ(400px); }
+        .carousel-item:nth-child(8) { transform: rotateY(315deg) translateZ(400px); }
+
+        /* Parallax Gallery */
+        .parallax-section {
+            position: relative;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .parallax-layer {
+            position: absolute;
+            width: 110%;
+            height: 110%;
+            background-size: cover;
+            background-position: center;
+            will-change: transform;
+        }
+
+        .parallax-content {
+            position: relative;
+            z-index: 10;
+            text-align: center;
+            background: rgba(0,0,0,0.6);
+            padding: 40px 60px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Flip Cards Gallery */
+        .flip-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .flip-card {
+            height: 400px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .flip-card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .flip-card-back {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+        }
+
+        /* Ken Burns Slideshow */
+        .kenburns-container {
+            position: relative;
+            height: 600px;
+            overflow: hidden;
+            margin: 50px auto;
+            max-width: 1200px;
+            border-radius: 30px;
+        }
+
+        .kenburns-slide {
+            position: absolute;
+            inset: 0;
+            opacity: 0;
+            transition: opacity 2s;
+        }
+
+        .kenburns-slide.active {
+            opacity: 1;
+        }
+
+        .kenburns-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #0b0b16;
+            animation: kenburns 20s infinite;
+        }
+
+        @keyframes kenburns {
+            0% { transform: scale(1) translate(0, 0); }
+            50% { transform: scale(1.08) translate(-2%, -2%); }
+            100% { transform: scale(1) translate(0, 0); }
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+            font-size: 3em;
+            font-weight: bold;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .glitch::before {
+            left: 2px;
+            text-shadow: -2px 0 var(--primary);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+
+        .glitch::after {
+            left: -2px;
+            text-shadow: -2px 0 var(--secondary);
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(12px, 9999px, 52px, 0); }
+            20% { clip: rect(65px, 9999px, 11px, 0); }
+            40% { clip: rect(26px, 9999px, 89px, 0); }
+            60% { clip: rect(78px, 9999px, 14px, 0); }
+            80% { clip: rect(33px, 9999px, 66px, 0); }
+            100% { clip: rect(55px, 9999px, 99px, 0); }
+        }
+
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 99px, 0); }
+            20% { clip: rect(12px, 9999px, 52px, 0); }
+            40% { clip: rect(78px, 9999px, 33px, 0); }
+            60% { clip: rect(26px, 9999px, 88px, 0); }
+            80% { clip: rect(44px, 9999px, 14px, 0); }
+            100% { clip: rect(11px, 9999px, 66px, 0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 { font-size: 3em; }
+            .carousel-container { height: 400px; }
+            .carousel-item { width: 200px; height: 280px; margin-left: -100px; margin-top: -140px; }
+            .kenburns-container { height: 400px; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <canvas id="particles-canvas"></canvas>
+
+    <header class="header">
+        <a class="back-button" href="surprise.html" target="_self">Back</a>
+        <h1>Pookie's Gallery</h1>
+        <p class="glitch" data-text="Interactive Experience">Interactive Experience</p>
+    </header>
+
+    <!-- 3D Carousel -->
+    <div class="carousel-container">
+        <div class="carousel">
+            <div class="carousel-item" onclick="showImage(0)">
+                <img src="images/cynthia-01.jpeg" alt="Cynthia photo 1">
+            </div>
+            <div class="carousel-item" onclick="showImage(1)">
+                <img src="images/cynthia-02.jpeg" alt="Cynthia photo 2">
+            </div>
+            <div class="carousel-item" onclick="showImage(2)">
+                <img src="images/cynthia-03.jpeg" alt="Cynthia photo 3">
+            </div>
+            <div class="carousel-item" onclick="showImage(3)">
+                <img src="images/cynthia-04.jpeg" alt="Cynthia photo 4">
+            </div>
+            <div class="carousel-item" onclick="showImage(4)">
+                <img src="images/cynthia-05.jpeg" alt="Cynthia photo 5">
+            </div>
+            <div class="carousel-item" onclick="showImage(5)">
+                <img src="images/cynthia-06.jpeg" alt="Cynthia photo 6">
+            </div>
+            <div class="carousel-item" onclick="showImage(6)">
+                <img src="images/cynthia-07.jpeg" alt="Cynthia photo 7">
+            </div>
+            <div class="carousel-item" onclick="showImage(7)">
+                <img src="images/cynthia-08.jpeg" alt="Cynthia photo 8">
+            </div>
+        </div>
+    </div>
+
+    <!-- Ken Burns Slideshow -->
+    <div class="kenburns-container">
+        <div class="kenburns-slide active">
+            <img src="images/cynthia-09.jpeg" alt="Cynthia slide 1">
+        </div>
+        <div class="kenburns-slide">
+            <img src="images/cynthia-10.jpeg" alt="Cynthia slide 2">
+        </div>
+        <div class="kenburns-slide">
+            <img src="images/cynthia-11.jpeg" alt="Cynthia slide 3">
+        </div>
+    </div>
+
+    <!-- Flip Cards Gallery -->
+    <div class="flip-gallery">
+        <div class="flip-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="images/cynthia-12.jpeg" alt="Cynthia card 1">
+                </div>
+                <div class="flip-card-back">
+                    <h3>UUHH!! CUTE SOUL</h3>
+                    <p>lil cute baby face behind the scenes (Cuteness inaficha white😁)</p>
+                </div>
+            </div>
+        </div>
+        <div class="flip-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="images/cynthia-13.jpeg" alt="Cynthia card 2">
+                </div>
+                <div class="flip-card-back">
+                    <h3>JUST CHILLIN</h3>
+                    <p>good vibes , nice life lets groove</p>
+                </div>
+            </div>
+        </div>
+        <div class="flip-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="images/cynthia-14.jpeg" alt="Cynthia card 3">
+                </div>
+                <div class="flip-card-back">
+                    <h3>BODY BE TEA🔥</h3>
+                    <p>slay giirrll, body be so daamn hoot🥵</p>
+                </div>
+            </div>
+        </div>
+        <div class="flip-card" onclick="flipCard(this)">
+            <div class="flip-card-inner">
+                <div class="flip-card-front">
+                    <img src="images/cynthia-15.jpeg" alt="Cynthia card 4">
+                </div>
+                <div class="flip-card-back">
+                    <h3>Celebration</h3>
+                    <p>Special moments worth remembering</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Particle System
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        const particleCount = 100;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 2 - 1;
+                this.speedY = Math.random() * 2 - 1;
+                this.color = `hsl(${Math.random() * 60 + 300}, 70%, 60%)`;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            // Connect particles
+            particles.forEach((a, index) => {
+                particles.slice(index + 1).forEach(b => {
+                    const dx = a.x - b.x;
+                    const dy = a.y - b.y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.strokeStyle = `rgba(255, 107, 157, ${0.2 * (1 - distance / 100)})`;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(a.x, a.y);
+                        ctx.lineTo(b.x, b.y);
+                        ctx.stroke();
+                    }
+                });
+            });
+
+            requestAnimationFrame(animateParticles);
+        }
+
+        initParticles();
+        animateParticles();
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        // Ken Burns Slideshow
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.kenburns-slide');
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        setInterval(nextSlide, 6000);
+
+        // Flip Card Function
+        function flipCard(card) {
+            // Auto-flips on hover via CSS, this is for mobile tap
+            card.classList.toggle('flipped');
+        }
+
+        // Show Image Function
+        function showImage(index) {
+            console.log('Showing image ' + index);
+            // Could open lightbox here
+        }
+
+        // Parallax Effect
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.parallax-layer');
+
+            parallaxElements.forEach((el, index) => {
+                const speed = 0.5 + (index * 0.1);
+                el.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

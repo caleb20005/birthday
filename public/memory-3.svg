@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Celebration stars">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#112f56"/>
+      <stop offset="100%" stop-color="#1f6f78"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <g fill="#ffd48a" opacity="0.95">
+    <polygon points="600,150 640,245 740,255 662,320 686,416 600,366 514,416 538,320 460,255 560,245"/>
+    <polygon points="250,390 275,447 336,452 289,491 304,549 250,517 196,549 211,491 164,452 225,447"/>
+    <polygon points="950,380 975,437 1036,442 989,481 1004,539 950,507 896,539 911,481 864,442 925,437"/>
+  </g>
+  <text x="600" y="590" fill="#f3fbff" font-size="76" font-family="Georgia, serif" text-anchor="middle">Birthday Queen</text>
+  <text x="600" y="654" fill="#d6f2ff" font-size="34" font-family="Verdana, sans-serif" text-anchor="middle">Cynthia, You Shine Bright</text>
+</svg>

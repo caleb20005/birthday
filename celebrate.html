@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Do You Love Me? - Coding.Stella</title>
+    <style>
+        /* Exact styles to match the dark Instagram/TikTok coding aesthetic */
+        body {
+            background-color: #121212;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+        }
+
+        .question-container, .result-container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+            width: 380px;
+            border: 2px solid #333;
+        }
+
+        /* Video/GIF styling from screenshot */
+        .local-gif, .gif-result {
+            width: 100%;
+            border-radius: 8px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        h2.question, h2.result-text {
+            color: #1a1a1a;
+            font-size: 24px;
+            margin: 20px 0;
+            font-weight: 700;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            height: 50px;
+            position: relative;
+        }
+
+        .btn {
+            padding: 10px 25px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: 0.2s;
+        }
+
+        .yes-btn {
+            background-color: #ff4d6d;
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 77, 109, 0.3);
+        }
+
+        .no-btn {
+            background-color: #e0e0e0;
+            color: #333;
+            position: relative; /* Starts here, moves via JS */
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* The Heart Decoration at the bottom */
+        .cssload-main {
+            position: absolute;
+            bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cssload-heart {
+            width: 40px;
+            height: 35px;
+            position: relative;
+            animation: pulse 0.8s infinite alternate;
+        }
+
+        .cssload-heartL, .cssload-heartR {
+            position: absolute;
+            background: #ff4d6d;
+            width: 25px;
+            height: 40px;
+            border-radius: 25px 25px 0 0;
+        }
+
+        .cssload-heartL { transform: rotate(-45deg); left: 13px; }
+        .cssload-heartR { transform: rotate(45deg); left: 0; }
+
+        @keyframes pulse {
+            to { transform: scale(1.15); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="question-container" class="question-container">
+        <img class="local-gif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueHByZ3Y4Z3BqZzBqZzBqZzBqZzBqZzBqZzBqZzBqZzBqJmVuPWSZz0xJmN0PWc/c76IJLufpNwSULPk77/giphy.gif" alt="Asking...">
+        <h2 class="question">Do you love me?</h2>
+        <div class="button-container">
+            <button class="yes-btn btn js-yes-btn" id="yesBtn">Yes</button>
+            <button class="no-btn btn js-no-btn" id="noBtn">No</button>
+        </div>
+    </div>
+
+    <div id="result-container" class="result-container hidden">
+        <img class="gif-result" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueHByZ3Y4Z3BqZzBqZzBqZzBqZzBqZzBqZzBqZzBqZzBqJmVuPWSZz0xJmN0PWc/KztT2c4u8mYYUiMKdJ/giphy.gif" alt="Success!">
+        <h2 class="result-text">I knew it! ❤️</h2>
+    </div>
+
+    <div class="cssload-main">
+        <div class="cssload-heart">
+            <span class="cssload-heartL"></span>
+            <span class="cssload-heartR"></span>
+        </div>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const questionBox = document.getElementById('question-container');
+        const resultBox = document.getElementById('result-container');
+
+        // Function to move the "No" button
+        const moveNoButton = () => {
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
+            
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = `${x}px`;
+            noBtn.style.top = `${y}px`;
+        };
+
+        noBtn.addEventListener('mouseover', moveNoButton);
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // For mobile users
+            moveNoButton();
+        });
+
+        // Toggle screens
+        yesBtn.addEventListener('click', () => {
+            questionBox.classList.add('hidden');
+            resultBox.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>

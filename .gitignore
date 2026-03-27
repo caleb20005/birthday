@@ -1,0 +1,8 @@
+# Dependencies
+/node_modules
+
+# Build artifacts
+/dist
+
+# IDE settings
+.vscode/

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Pink floral memory card">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5a1f54"/>
+      <stop offset="100%" stop-color="#ff7d9c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="900" fill="url(#bg)"/>
+  <g fill="#ffd8e5" opacity="0.9">
+    <circle cx="220" cy="220" r="86"/>
+    <circle cx="320" cy="220" r="86"/>
+    <circle cx="270" cy="140" r="86"/>
+    <circle cx="270" cy="300" r="86"/>
+  </g>
+  <g fill="#ffeaf2" opacity="0.9">
+    <circle cx="890" cy="630" r="76"/>
+    <circle cx="980" cy="630" r="76"/>
+    <circle cx="935" cy="560" r="76"/>
+    <circle cx="935" cy="700" r="76"/>
+  </g>
+  <text x="600" y="500" fill="#fff7fb" font-size="78" font-family="Georgia, serif" text-anchor="middle">Pookie Cynthia</text>
+  <text x="600" y="568" fill="#ffe4ee" font-size="36" font-family="Verdana, sans-serif" text-anchor="middle">Soft, Sweet, Stunning</text>
+</svg>
