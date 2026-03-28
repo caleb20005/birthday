@@ -9,7 +9,7 @@
     (function () {
       try {
         const key = "hb_seen_letter";
-        const isIndex = window.location.pathname.endsWith("index.html") || window.location.pathname === "/";
+        const isIndex = window.location.pathname.endsWith("letter.html") || window.location.pathname === "/";
         if (isIndex && !localStorage.getItem(key)) {
           localStorage.setItem(key, "1");
           window.location.replace("letter.html");
@@ -494,7 +494,7 @@
   </style>
 </head>
 <body>
-  <a class="top-back" href="letter.html">Back</a>
+  <a class="top-back" href="index.html">Back</a>
   <canvas class="fireworks" id="fireworks" aria-hidden="true"></canvas>
   <div class="bg-blur bg-blur-a"></div>
   <div class="bg-blur bg-blur-b"></div>
@@ -763,3 +763,4 @@
   </script>
 </body>
 </html>
+
